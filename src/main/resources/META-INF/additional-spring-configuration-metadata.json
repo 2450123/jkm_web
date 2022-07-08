@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "register.email-deltime",
+      "type": "java.lang.String",
+      "description": "Description for register.email-deltime."
+    },
+    {
+      "name": "verification-code-length",
+      "type": "java.lang.String",
+      "description": "Description for verification-code-length."
+    }
+  ] }
