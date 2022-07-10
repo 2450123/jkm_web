@@ -1,7 +1,7 @@
 package com.example.jkm_web.model;
 
-public class Teacher {
-    private String teacherId;
+public class Teacher extends User {
+    private String id;
     private String name;
     private String email;
     private String password;
@@ -9,8 +9,8 @@ public class Teacher {
     public Teacher() {
     }
 
-    public Teacher(String teacherId, String name, String email, String password) {
-        this.teacherId = teacherId;
+    public Teacher(String id, String name, String email, String password) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
@@ -19,19 +19,19 @@ public class Teacher {
     @Override
     public String toString() {
         return "TeacherController{" +
-                "teacherId='" + teacherId + '\'' +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
 
-    public String getTeacherId() {
-        return teacherId;
+    public String getId() {
+        return id;
     }
 
-    public void setTeacherId(String teacherId) {
-        this.teacherId = teacherId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

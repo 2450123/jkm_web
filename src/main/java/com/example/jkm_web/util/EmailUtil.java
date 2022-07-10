@@ -1,6 +1,5 @@
 package com.example.jkm_web.util;
 
-import com.example.jkm_web.model.Teacher;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
@@ -10,7 +9,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
 import javax.annotation.Resource;
 import java.io.*;
@@ -64,38 +62,21 @@ public class EmailUtil {
     private JavaMailSender javaMailSender;
     @Value("${spring.mail.username}")
     private String from;
-    @Value("${ip}")
-    private String ip;
 
-    public String sendEmailActivation(Teacher teacher) {
+    public boolean sendEmailActivation(String email,String data) {
         try {
-            //读取模板文件
-            String filePath = "static/sendEmailActivationHtml.html";
-            String html = readHtmlToString(filePath);
-
-            //写入参数
-            Document document = Jsoup.parse(html);
-            document.getElementById("userId").html(teacher.getName());
-            //document.getElementById("servletIP").attr("href", "http://" + ip + "/rxyl/emailActivationCode.do?code=" + emailActivation + "&email=" + user.getEmail() + "&sessionId=" + sessionId);
-
             MimeMessageHelper messageHelper = new MimeMessageHelper(javaMailSender.createMimeMessage(), true);
             messageHelper.setFrom(from);
-            messageHelper.setTo(teacher.getEmail());
+            messageHelper.setTo(email);
             messageHelper.setSubject("激活账号");
-            messageHelper.setText(document.toString(),true);
+            messageHelper.setText(data,true);
 
             javaMailSender.send(messageHelper.getMimeMessage());
-            logger.info("发送邮件成功:" + teacher.getEmail());
+            logger.info("发送邮件成功:->" + email);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            logger.info("发送邮件失败:->" + email);
+            return false;
         }
-
-//        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-//        simpleMailMessage.setFrom(from);
-//        simpleMailMessage.setTo(teacher.getEmail());
-//        simpleMailMessage.setSubject("Test");
-//        simpleMailMessage.setText("Test");
-//        javaMailSender.send(simpleMailMessage);
-        return "";
+        return true;
     }
 }
