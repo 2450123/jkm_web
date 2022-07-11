@@ -5,5 +5,5 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface TeacherDao {
-    int insertTeacher(Teacher teacher);
+    void insertTeacher(Teacher teacher);
 }

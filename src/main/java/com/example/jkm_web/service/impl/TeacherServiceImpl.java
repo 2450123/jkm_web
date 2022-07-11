@@ -13,8 +13,7 @@ public class TeacherServiceImpl implements TeacherService {
     private TeacherDao teacherDao;
 
     @Override
-    public boolean addTeacher(Teacher teacher) {
+    public void addTeacher(Teacher teacher) {
         teacherDao.insertTeacher(teacher);
-        return false;
     }
 }

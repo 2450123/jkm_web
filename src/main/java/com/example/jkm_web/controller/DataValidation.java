@@ -1,6 +1,8 @@
 package com.example.jkm_web.controller;
 
+import com.example.jkm_web.model.Student;
 import com.example.jkm_web.model.Teacher;
+import com.example.jkm_web.service.StudentService;
 import com.example.jkm_web.service.TeacherService;
 import com.example.jkm_web.util.EmailUtil;
 import org.jsoup.Jsoup;
@@ -34,6 +36,8 @@ public class DataValidation {
     private EmailUtil emailUtil;
     @Resource
     private TeacherService teacherService;
+    @Resource
+    private StudentService studentService;
 
     @Value("${online-time}")
     private Integer onlineTime;
@@ -44,6 +48,7 @@ public class DataValidation {
     emailActivationCode这个函数写的并不好，中间很大一段都应该创建一个Service来处理。
     Controller层和Service层还是应该分清楚一些，方便以后排查。
     这段后期可能重构
+    越写越乱了，焯
      */
     @RequestMapping("/emailActivationCode")
     public String emailActivationCode(String code, String email, HttpServletRequest request, HttpServletResponse response) {
@@ -77,9 +82,36 @@ public class DataValidation {
                 }catch (Exception e){
                     logger.info("注册过程中，添加Teacher失败：\n"+ e);
                 }
+            }else{
+                Student student = new Student((String) map.get("id"), (String) map.get("name"), email, (String) map.get("password"), (String) map.get("classId"));
+                try{
+                    studentService.addStudent(student);
+                    msg = "激活成功";
+                    //激活成功，注册状态改为在线状态。重新设置过期时间，以及状态修改。
+                    stringRedisTemplate.expire(email, onlineTime, TimeUnit.MINUTES);
+                    stringRedisTemplate.opsForHash().delete(email, "code");
+                    stringRedisTemplate.opsForHash().put(email, "online", "1");
+                    //设置cookie，存活时间同上。用于自动登录。
+                    Cookie cookie = new Cookie("email", email);
+                    cookie.setPath("/");
+                    cookie.setMaxAge(onlineTime * 60);
+                    response.addCookie(cookie);
+                    //发送注册成功邮件
+                    //读取模板文件
+                    String filePath = "templates/registerSuccessHtml.html";
+                    String html = EmailUtil.readHtmlToString(filePath);
+                    //写入参数
+                    Document document = Jsoup.parse(html);
+                    document.getElementById("userId").html((String) stringRedisTemplate.opsForHash().get(email, "name"));
+                    emailUtil.sendEmailActivation(email, document.toString());
+                }catch (Exception e){
+                    logger.info("注册过程中，添加Student失败：\n"+ e);
+                }
             }
         }
         request.setAttribute("msg", msg);
         return "index";
     }
+
+
 }

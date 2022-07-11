@@ -40,6 +40,7 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Override
     public String Register(User user) {
+        System.out.println(user);
         String result = "邮件发送失败，邮箱可能存在问题";
         //生成验证码
         String emailVerificationCode = VerificationCodeUtil.getVerificationCode(verificationCodeLength);
