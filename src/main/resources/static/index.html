@@ -5,6 +5,17 @@
     <title>首页</title>
 </head>
 <body>
-
+<div>
+    <label for="yanZheng" id="yanZhengtext">验证码</label>
+    <input type="text" name="yanZheng" id="yanZheng" style="width: 172px;">
+    <img id="Img" src="/imageCode" height="50px" width="172px"
+         onclick="changeImg()" alt="验证码看不清，换一张"><br>
+    <span id="yanZhengError" class="error"></span>
+</div>
+<script type="text/javascript">
+    function changeImg() {
+        document.getElementById("Img").src = "imageCode?" + Math.random();
+    }
+</script>
 </body>
 </html>

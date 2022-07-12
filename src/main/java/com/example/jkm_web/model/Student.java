@@ -1,18 +1,23 @@
 package com.example.jkm_web.model;
 
-public class Student extends User {
+import java.io.Serializable;
+
+public class Student extends User  implements Serializable {
+    private static final long serialVersionUID = -6661244861643381655L;
     private String id;
     private String name;
     private String email;
     private String password;
     private String classId;
 
-    public Student(String id, String name, String email, String password, String classId) {
+    public Student() {
+    }
+
+    public Student(String id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
-        this.classId = classId;
     }
 
     @Override

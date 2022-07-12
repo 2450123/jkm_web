@@ -1,7 +1,5 @@
 package com.example.jkm_web.util;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +9,11 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.*;
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
 @Component
@@ -25,9 +27,6 @@ public class EmailUtil {
         Reader reader = null;
         try {
             is = new ClassPathResource(htmlPath).getInputStream();
-            if (is == null) {
-                throw new Exception("未找到html模板文件");
-            }
             reader = new InputStreamReader(is, StandardCharsets.UTF_8);
             StringBuilder sb = new StringBuilder();
             int bufferSize = 1024;
@@ -63,20 +62,14 @@ public class EmailUtil {
     @Value("${spring.mail.username}")
     private String from;
 
-    public boolean sendEmailActivation(String email,String data) {
-        try {
-            MimeMessageHelper messageHelper = new MimeMessageHelper(javaMailSender.createMimeMessage(), true);
-            messageHelper.setFrom(from);
-            messageHelper.setTo(email);
-            messageHelper.setSubject("激活账号");
-            messageHelper.setText(data,true);
+    public void sendEmailActivation(String email, String data) throws MessagingException {
 
-            javaMailSender.send(messageHelper.getMimeMessage());
-            logger.info("发送邮件成功:->" + email);
-        } catch (Exception e) {
-            logger.info("发送邮件失败:->" + email);
-            return false;
-        }
-        return true;
+        MimeMessageHelper messageHelper = new MimeMessageHelper(javaMailSender.createMimeMessage(), true);
+        messageHelper.setFrom(from);
+        messageHelper.setTo(email);
+        messageHelper.setSubject("jkm验证码");
+        messageHelper.setText(data, true);
+
+        javaMailSender.send(messageHelper.getMimeMessage());
     }
 }
