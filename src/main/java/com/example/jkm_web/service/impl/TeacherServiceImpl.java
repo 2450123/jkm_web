@@ -16,4 +16,5 @@ public class TeacherServiceImpl implements TeacherService {
     public void addTeacher(Teacher teacher) {
         teacherDao.insertTeacher(teacher);
     }
+
 }

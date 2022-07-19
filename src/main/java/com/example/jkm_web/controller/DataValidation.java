@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * 数据校验
@@ -49,6 +51,8 @@ public class DataValidation {
     private String ip;
     @Value("${email-max-life-time}")
     private Integer emailLifeTime;
+    @Value("${image-code-length}")
+    private Integer imageCodeLength;
 
     /**
      * 生成图片验证码
@@ -58,7 +62,7 @@ public class DataValidation {
     @RequestMapping(value = "/imageCode", method = RequestMethod.GET)
     @ResponseBody
     public void imageCode(HttpServletRequest request, HttpServletResponse response) {
-        String imageCode = VerificationCodeUtil.getVerificationCode(4);
+        String imageCode = VerificationCodeUtil.getVerificationCode(imageCodeLength);
         //验证码保存在session中
         HttpSession session = request.getSession();
         session.setAttribute("imageCode", imageCode);
@@ -79,7 +83,6 @@ public class DataValidation {
 
     /**
      * 发送邮件验证码
-     *
      * @param email 发往的邮箱地址
      */
     @ApiOperation(value = "发送验证码邮件")
@@ -102,6 +105,15 @@ public class DataValidation {
             logger.info("发送邮件成功:->" + email);
             //记录验证码到session
             session.setAttribute("emailCode", emailCode);
+            //设置过期时间
+            Timer timer = new Timer();
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    session.removeAttribute("emailCode");
+                }
+            };
+            timer.schedule(task,emailLifeTime*60*1000);
         } catch (Exception e) {
             logger.info("发送邮件失败:->" + email);
             return new RestMessage(false, 500, "邮件发送异常", "").toString();

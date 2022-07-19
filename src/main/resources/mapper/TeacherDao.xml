@@ -7,4 +7,14 @@
         insert into teacher (id, name, email, password)
         values (#{id}, #{name}, #{email}, #{password})
     </insert>
+    <update id="updatePassword">
+        update teacher
+        set password=#{password}
+        where id = #{id}
+    </update>
+    <select id="queryTeacherById" resultType="com.example.jkm_web.model.Teacher">
+        select *
+        from teacher
+        where id = #{id}
+    </select>
 </mapper>

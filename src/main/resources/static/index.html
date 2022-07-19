@@ -6,11 +6,18 @@
 </head>
 <body>
 <div>
-    <label for="yanZheng" id="yanZhengtext">验证码</label>
-    <input type="text" name="yanZheng" id="yanZheng" style="width: 172px;">
-    <img id="Img" src="/imageCode" height="50px" width="172px"
-         onclick="changeImg()" alt="验证码看不清，换一张"><br>
-    <span id="yanZhengError" class="error"></span>
+<!--    <label for="yanZheng" id="yanZhengtext">验证码</label>-->
+<!--    <input type="text" name="yanZheng" id="yanZheng" style="width: 172px;">-->
+<!--    <img id="Img" src="/imageCode" height="50px" width="172px"-->
+<!--         onclick="changeImg()" alt="验证码看不清，换一张"><br>-->
+<!--    <span id="yanZhengError" class="error"></span>-->
+<!--    <span></span>-->
+    <form action="/UploadImage" method="post"
+          enctype="multipart/form-data">
+
+        文件名称:<input name="image" type="file"/><br>
+        <input type="submit" value="提交"/>
+    </form>
 </div>
 <script type="text/javascript">
     function changeImg() {

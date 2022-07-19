@@ -35,9 +35,14 @@ public class AccountServiceImpl implements AccountService {
     private Integer emailCodeLength;
     @Value("${email-max-life-time}")
     private Integer emailLifeTime;
-    @Value("${ip}")
-    private String ip;
 
+
+
+    /**
+     * 用户信息添加进数据库
+     * @param user
+     * @throws Exception
+     */
     @Override
     public void Register(User user) throws Exception {
         if (user instanceof Student) {
@@ -47,6 +52,12 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    /**
+     * 发送验证邮件
+     * @param email
+     * @return
+     * @throws Exception
+     */
     @Override
     public String sendEmailCode(String email) throws Exception {
         //生成验证码
@@ -61,6 +72,26 @@ public class AccountServiceImpl implements AccountService {
         //发送邮件
         emailUtil.sendEmailActivation(email, document.toString());
         return emailCode;
+    }
+
+    @Override
+    public void Reset(String id,String password,String role) throws Exception {
+        if (role.equals("student")) {
+            studentDao.updatePassword(id,password);
+        } else if (role.equals("teacher")) {
+            teacherDao.updatePassword(id,password);
+        }
+    }
+
+    @Override
+    public User queryUserById(String id, String role) throws Exception {
+        User user = new User();
+        if (role.equals("student")) {
+            user = studentDao.queryStudentById(id);
+        } else if (role.equals("teacher")) {
+            user = teacherDao.queryTeacherById(id);
+        }
+        return user;
     }
 
 
